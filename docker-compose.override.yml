@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    volumes:
+      - ./packages/telegram-bot:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  conversion-service:
+    volumes:
+      - ./packages/conversion-service:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  user-service:
+    volumes:
+      - ./packages/user-service:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  web-app:
+    volumes:
+      - ./packages/web-app:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  payment-service:
+    volumes:
+      - ./packages/payment-service:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  mongodb:
+    ports:
+      - "27017:27017" 

@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: ./packages/telegram-bot
+    restart: always
+    env_file: ./packages/telegram-bot/.env
+    depends_on:
+      - mongodb
+      - conversion-service
+    networks:
+      - app-network
+
+  conversion-service:
+    build: ./packages/conversion-service
+    restart: always
+    env_file: ./packages/conversion-service/.env
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  user-service:
+    build: ./packages/user-service
+    restart: always
+    env_file: ./packages/user-service/.env
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  web-app:
+    build: ./packages/web-app
+    restart: always
+    env_file: ./packages/web-app/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - payment-service
+    networks:
+      - app-network
+
+  payment-service:
+    build: ./packages/payment-service
+    restart: always
+    env_file: ./packages/payment-service/.env
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb-data: 
